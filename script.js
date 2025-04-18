@@ -128,36 +128,36 @@ if (app) {
                      // Vous pourriez aussi afficher un avatar par défaut ici
                 }
 
-                // --- Logique post-connexion (Exemple: Vérifier/Créer profil Firestore) ---
-                // Décommenter ce bloc une fois que votre collection 'users' est prête dans Firestore
-                /*
-                console.log("DEBUG: Vérification du profil utilisateur dans Firestore...");
-                const userRef = db.collection('users').doc(user.uid);
-                userRef.get().then(doc => {
-                   if (doc.exists) {
-                       console.log("DEBUG: Données utilisateur Firestore chargées:", doc.data());
-                       // Mettre à jour l'UI avec les données Firestore (badges, points...)
-                       // Exemple : userNameSpan.textContent = doc.data().name || user.displayName;
-                   } else {
-                       console.log("DEBUG: Nouvel utilisateur, création du profil Firestore...");
-                       // Créer un nouveau document pour cet utilisateur dans la collection 'users'
-                       userRef.set({
-                           uid: user.uid,
-                           email: user.email,
-                           name: user.displayName || 'Utilisateur',
-                           photoURL: user.photoURL || '',
-                           reputation: 1, // Score initial
-                           badges: [],
-                           createdAt: new Date()
-                       }).then(() => {
-                           console.log("DEBUG: Profil utilisateur Firestore créé avec succès.");
-                       }).catch(error => {
-                           console.error("DEBUG: Erreur lors de la création du profil utilisateur Firestore:", error);
-                       });
-                   }
-                }).catch(error => {
-                   console.error("DEBUG: Erreur lors du chargement du profil utilisateur Firestore:", error);
-                });
+                            // --- Logique post-connexion (Exemple: Vérifier/Créer profil Firestore) ---
+            // Décommenter ce bloc une fois que votre collection 'users' est prête dans Firestore
+
+            console.log("DEBUG: Vérification du profil utilisateur dans Firestore...");
+            const userRef = db.collection('users').doc(user.uid);
+            userRef.get().then(doc => {
+               if (doc.exists) {
+                   console.log("DEBUG: Données utilisateur Firestore chargées:", doc.data());
+                   // Mettre à jour l'UI avec les données Firestore (badges, points...)
+                   // Exemple : userNameSpan.textContent = doc.data().name || user.displayName;
+               } else {
+                   console.log("DEBUG: Nouvel utilisateur, création du profil Firestore...");
+                   // Créer un nouveau document pour cet utilisateur dans la collection 'users'
+                   userRef.set({
+                       uid: user.uid,
+                       email: user.email,
+                       name: user.displayName || 'Utilisateur', // Utilise le nom de Google ou 'Utilisateur'
+                       photoURL: user.photoURL || '', // Utilise la photo Google ou vide
+                       reputation: 1, // Score initial
+                       badges: [], // Array vide de badges initiaux
+                       createdAt: new Date() // Timestamp de création
+                   }).then(() => {
+                       console.log("DEBUG: Profil utilisateur Firestore créé avec succès.");
+                   }).catch(error => {
+                       console.error("DEBUG: Erreur lors de la création du profil utilisateur Firestore:", error);
+                   });
+               }
+            }).catch(error => {
+               console.error("DEBUG: Erreur lors du chargement du profil utilisateur Firestore:", error);
+            });
                 */
 
             } else {
