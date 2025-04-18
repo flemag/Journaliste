@@ -9,14 +9,16 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 const app = window.firebaseApp;
 
 if (app) {
-    console.log("Firebase App accessible dans script.js !");
+    console.log("DEBUG: Firebase App accessible dans script.js !");
 
     // *** Obtenir les instances des services à partir de l'App ***
-    const db = getFirestore(app); // Instance Firestore
-    const auth = getAuth(app);   // Instance Authentication
+    const db = getFirestore(app);   // Instance Firestore
+    const auth = getAuth(app);     // Instance Authentication
     const provider = new GoogleAuthProvider(); // Instance du fournisseur Google
 
-    console.log("Firestore et Auth instances obtenues.");
+    console.log("DEBUG: Firestore et Auth instances obtenues.");
+    console.log("DEBUG: auth instance:", auth);
+    console.log("DEBUG: provider instance:", provider);
 
 
     // --- Éléments UI d'authentification ---
@@ -26,87 +28,118 @@ if (app) {
     const userNameSpan = document.getElementById('userName');
     const userAvatarImg = document.getElementById('userAvatar');
 
+    console.log("DEBUG: Éléments UI d'authentification récupérés.");
+    console.log("DEBUG: signInBtn:", signInBtn);
+    console.log("DEBUG: signOutBtn:", signOutBtn);
+    console.log("DEBUG: userInfoDiv:", userInfoDiv);
+    console.log("DEBUG: userNameSpan:", userNameSpan);
+    console.log("DEBUG: userAvatarImg:", userAvatarImg);
+
+
     // --- Logique d'authentification ---
 
     // 1. Écouter le clic sur le bouton de connexion
     // On vérifie si le bouton existe avant d'ajouter l'écouteur
     if (signInBtn) {
+        console.log("DEBUG: signInBtn trouvé, ajout de l'écouteur de clic.");
         signInBtn.addEventListener('click', async () => {
+            console.log("DEBUG: Click sur signInBtn détecté.");
             try {
                 // Ouvre la popup de connexion Google
-                console.log("Tentative de connexion...");
+                console.log("DEBUG: Appel de signInWithPopup...");
                 const result = await signInWithPopup(auth, provider);
-                console.log("Connexion réussie:", result.user);
+                // Cette ligne ne sera atteinte que si la popup se ferme avec succès (connexion ou annulation par l'utilisateur)
+                console.log("DEBUG: signInWithPopup a terminé.", result); // Log complet du résultat
+                console.log("DEBUG: Connexion réussie:", result.user);
                 // onAuthStateChanged va gérer la mise à jour de l'UI
             } catch (error) {
                 // Gérer les erreurs de connexion
-                console.error("Erreur de connexion:", error.code, error.message);
-                // Vous pourriez afficher un message d'erreur plus convivial à l'utilisateur ici
+                console.error("DEBUG: Erreur détectée pendant signInWithPopup.");
+                console.error("DEBUG: Code d'erreur:", error.code);
+                console.error("DEBUG: Message d'erreur:", error.message);
+                console.error("DEBUG: Objet d'erreur complet:", error); // Log complet de l'objet erreur
+
+                 // Messages d'erreur courants
                 if (error.code === 'auth/popup-closed-by-user') {
-                    console.log("Popup de connexion fermée par l'utilisateur.");
+                    console.log("INFO: Popup de connexion fermée par l'utilisateur.");
                 } else if (error.code === 'auth/cancelled-popup-request') {
-                     console.log("Tentative d'ouverture de popup annulée (probablement déjà une ouverte ou bloquée).");
+                     console.log("INFO: Tentative d'ouverture de popup annulée (probablement déjà une ouverte ou bloquée par le navigateur).");
+                } else if (error.code === 'auth/auth-domain-config-error') {
+                    console.error("ERREUR CRITIQUE: Erreur de configuration du domaine d'authentification. Vérifiez vos domaines autorisés dans la console Firebase.");
                 }
                  // Plus d'infos sur les codes d'erreur : https://firebase.google.com/docs/auth/web/google-signin#handle_account_and_credential_errors
             }
         });
     } else {
-         console.error("Élément #signInBtn non trouvé !");
+         console.error("DEBUG: Élément #signInBtn non trouvé dans le DOM !");
     }
 
 
     // 2. Écouter le clic sur le bouton de déconnexion
      // On vérifie si le bouton existe avant d'ajouter l'écouteur
      if (signOutBtn) {
+        console.log("DEBUG: signOutBtn trouvé, ajout de l'écouteur de clic.");
         signOutBtn.addEventListener('click', async () => {
+            console.log("DEBUG: Click sur signOutBtn détecté.");
             try {
-                console.log("Tentative de déconnexion...");
+                console.log("DEBUG: Appel de signOut...");
                 await signOut(auth);
-                console.log("Déconnexion réussie.");
+                console.log("DEBUG: signOut a terminé.");
+                console.log("DEBUG: Déconnexion réussie.");
                 // onAuthStateChanged va gérer la mise à jour de l'UI
             } catch (error) {
-                console.error("Erreur de déconnexion:", error.message);
-                 // Afficher un message d'erreur à l'utilisateur si besoin
+                 console.error("DEBUG: Erreur détectée pendant signOut.");
+                 console.error("DEBUG: Message d'erreur:", error.message);
+                 console.error("DEBUG: Objet d'erreur complet:", error); // Log complet de l'objet erreur
             }
         });
      } else {
-        console.error("Élément #signOutBtn non trouvé !");
+        console.error("DEBUG: Élément #signOutBtn non trouvé dans le DOM !");
      }
 
 
     // 3. Écouter les changements d'état d'authentification (connexion/déconnexion)
     // Cette fonction se déclenche au chargement de la page ET à chaque changement d'état.
      if (userInfoDiv && signInBtn && userNameSpan && userAvatarImg) { // Vérifie que les éléments UI existent
+        console.log("DEBUG: Écouteur onAuthStateChanged configuré.");
         onAuthStateChanged(auth, (user) => {
+            console.log("DEBUG: onAuthStateChanged déclenché. User:", user);
             if (user) {
                 // L'utilisateur est connecté
-                console.log("État d'authentification changé: Utilisateur connecté", user);
+                console.log("DEBUG: Utilisateur connecté détecté. UID:", user.uid);
 
                 // Afficher les infos utilisateur et le bouton de déconnexion
                 userInfoDiv.classList.remove('hidden');
                 signInBtn.classList.add('hidden');
+                 console.log("DEBUG: UI mise à jour pour l'utilisateur connecté.");
+
 
                 // Mettre à jour les infos utilisateur
                 userNameSpan.textContent = user.displayName || 'Utilisateur'; // Utilise le nom ou un texte par défaut
+                console.log("DEBUG: Nom d'utilisateur défini sur:", userNameSpan.textContent);
+
                 if (user.photoURL) {
                     userAvatarImg.src = user.photoURL;
                     userAvatarImg.classList.remove('hidden'); // Assurez-vous que l'image est visible si elle existe
+                     console.log("DEBUG: URL de l'avatar défini sur:", user.photoURL);
                 } else {
                      userAvatarImg.classList.add('hidden'); // Cache l'image s'il n'y a pas d'avatar
+                      console.log("DEBUG: Pas d'URL d'avatar, image cachée.");
                      // Vous pourriez aussi afficher un avatar par défaut ici
                 }
 
                 // --- Logique post-connexion (Exemple: Vérifier/Créer profil Firestore) ---
                 // Décommenter ce bloc une fois que votre collection 'users' est prête dans Firestore
                 /*
+                console.log("DEBUG: Vérification du profil utilisateur dans Firestore...");
                 const userRef = db.collection('users').doc(user.uid);
                 userRef.get().then(doc => {
                    if (doc.exists) {
-                       console.log("Données utilisateur Firestore chargées:", doc.data());
+                       console.log("DEBUG: Données utilisateur Firestore chargées:", doc.data());
                        // Mettre à jour l'UI avec les données Firestore (badges, points...)
                        // Exemple : userNameSpan.textContent = doc.data().name || user.displayName;
                    } else {
-                       console.log("Nouvel utilisateur, création du profil Firestore...");
+                       console.log("DEBUG: Nouvel utilisateur, création du profil Firestore...");
                        // Créer un nouveau document pour cet utilisateur dans la collection 'users'
                        userRef.set({
                            uid: user.uid,
@@ -117,22 +150,24 @@ if (app) {
                            badges: [],
                            createdAt: new Date()
                        }).then(() => {
-                           console.log("Profil utilisateur Firestore créé.");
+                           console.log("DEBUG: Profil utilisateur Firestore créé avec succès.");
                        }).catch(error => {
-                           console.error("Erreur lors de la création du profil utilisateur Firestore:", error);
+                           console.error("DEBUG: Erreur lors de la création du profil utilisateur Firestore:", error);
                        });
                    }
                 }).catch(error => {
-                   console.error("Erreur lors du chargement du profil utilisateur Firestore:", error);
+                   console.error("DEBUG: Erreur lors du chargement du profil utilisateur Firestore:", error);
                 });
                 */
 
             } else {
                 // L'utilisateur est déconnecté
-                console.log("État d'authentification changé: Utilisateur déconnecté");
+                console.log("DEBUG: Utilisateur déconnecté détecté.");
                 // Cacher les infos utilisateur et afficher le bouton de connexion
                 userInfoDiv.classList.add('hidden');
                 signInBtn.classList.remove('hidden');
+                console.log("DEBUG: UI mise à jour pour l'utilisateur déconnecté.");
+
 
                  // Réinitialiser les infos utilisateur affichées
                 userNameSpan.textContent = '';
@@ -142,12 +177,12 @@ if (app) {
             }
         });
      } else {
-         console.error("Un ou plusieurs éléments UI d'authentification sont manquants (userInfo, signInBtn, userName, userAvatar) !");
+         console.error("DEBUG: Un ou plusieurs éléments UI d'authentification sont manquants pour onAuthStateChanged (userInfo, signInBtn, userName, userAvatar) !");
      }
 
 
 } else {
-    console.error("L'instance Firebase App n'est pas accessible dans script.js. Vérifiez l'initialisation dans index.html.");
+    console.error("DEBUG: L'instance Firebase App n'est PAS accessible dans script.js. Vérifiez l'initialisation dans index.html.");
 }
 
 
@@ -164,6 +199,7 @@ const observerOptions = {
 
 // Vérifie si IntersectionObserver est supporté
 if ('IntersectionObserver' in window) {
+    console.log("DEBUG: IntersectionObserver supporté, configuré.");
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -183,11 +219,10 @@ if ('IntersectionObserver' in window) {
       observer.observe(el);
     });
 
-    console.log("Scroll Reveal observer configuré.");
 
 } else {
     // Fallback pour les navigateurs ne supportant pas IntersectionObserver
-    console.log("IntersectionObserver non supporté, animation scroll-reveal désactivée.");
+    console.log("DEBUG: IntersectionObserver non supporté, animation scroll-reveal désactivée.");
     scrollElements.forEach(el => {
         el.classList.add("is-visible"); // Rendre les éléments visibles directement
     });
@@ -196,4 +231,4 @@ if ('IntersectionObserver' in window) {
 
 // --- Autres scripts JavaScript iront ici ---
 // La logique pour lire/écrire dans Firestore, gérer les votes, etc.,
-// utilisera les instances 'db' et 'auth' qui sont maintenant correctement obtenues.
+// utilisera les instances 'db' et 'auth'.
