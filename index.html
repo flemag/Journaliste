@@ -6,7 +6,6 @@
     <title>Plateforme de Journalisme Citoyen</title>
 
     <!-- Liens vers les polices Google Fonts -->
-    <!-- Vous pouvez choisir d'autres polices qui correspondent mieux à votre vision -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
@@ -20,14 +19,11 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        // Associer les noms de polices CSS aux noms Tailwind
                         serif: ['"Playfair Display"', 'serif'],
                         sans: ['"Inter"', 'sans-serif'],
-                        mono: ['"Space Mono"', 'monospace'], // Pour le côté "code/dossier"
+                        mono: ['"Space Mono"', 'monospace'],
                     },
                     colors: {
-                        // Définir votre palette de couleurs audacieuses
-                        // Noms simples pour faciliter l'utilisation dans Tailwind (ex: bg-primary-light)
                         primary: {
                             DEFAULT: '#00FFFF', // Cyan Electrique
                             dark: '#00CDCD',
@@ -47,8 +43,6 @@
                          warning: {
                             DEFAULT: '#FFA500', // Orange (pour en cours)
                          },
-                         // Les neutres principaux seront gérés par les classes text-white, bg-black, etc.
-                         // mais vous pouvez les définir ici si vous voulez des nuances spécifiques (ex: gray-100: '#F5F5F5')
                          noir: '#000000',
                          blanc: '#FFFFFF',
                     }
@@ -57,34 +51,31 @@
         }
     </script>
 
-    <!-- Styles personnalisés -->
+    <!-- Styles personnalisés (curseur, scroll-reveal de base) -->
     <style>
-        /* Curseur personnalisé (exemple simple) */
         body {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="24" fill="%2300FFFF"/><rect x="0" y="10" width="24" height="4" fill="%2300FFFF"/></svg>'), auto; /* Une petite croix ou cible en cyan */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="24" fill="%2300FFFF"/><rect x="0" y="10" width="24" height="4" fill="%2300FFFF"/></svg>'), auto;
         }
         a, button, input[type="button"], input[type="submit"], select {
-             cursor: pointer; /* Pour garder le curseur pointer sur les éléments interactifs */
+             cursor: pointer;
         }
 
-        /* Styles de base pour l'animation scroll-reveal */
-        /* L'animation elle-même sera gérée par JS et la classe 'is-visible' */
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(20px); /* Commence légèrement en dessous */
+            transform: translateY(20px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
         .scroll-reveal.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-         /* Appliquer un délai aux éléments suivants pour un effet de cascade */
+        /* Délai de cascade simple */
         .scroll-reveal:nth-child(1) { transition-delay: 0ms; }
         .scroll-reveal:nth-child(2) { transition-delay: 100ms; }
         .scroll-reveal:nth-child(3) { transition-delay: 200ms; }
         .scroll-reveal:nth-child(4) { transition-delay: 300ms; }
         .scroll-reveal:nth-child(5) { transition-delay: 400ms; }
-         /* ... ajoutez plus si besoin ou gérez dynamiquement avec data-delay en JS */
+        /* Ajoutez plus si nécessaire ou gérez dynamiquement en JS */
 
 
     </style>
@@ -94,7 +85,7 @@
 
     <div class="container mx-auto p-4 lg:p-8 max-w-screen-xl">
 
-        <!-- Titre Principal (ajusté pour utiliser les couleurs custom) -->
+        <!-- Titre Principal -->
         <header class="my-12 text-center lg:text-left">
             <h1 class="text-5xl md:text-7xl font-serif font-bold text-blanc">
                 <span class="block text-primary leading-tight">Citoyen</span>
@@ -120,7 +111,7 @@
                 <p class="text-base font-sans mb-4">Une enquête de terrain sur l'avancement réel des travaux du parc "Bellevue" et les retours des riverains.</p>
                 <div class="flex justify-between items-center text-sm opacity-90">
                      <span class="font-bold">Votes: 120</span>
-                     <span class="font-bold text-accent">Crédible: 85%</span> <!-- Utilisation de la couleur accent -->
+                     <span class="font-bold text-accent">Crédible: 85%</span>
                 </div>
             </article>
 
@@ -131,7 +122,7 @@
                 <p class="text-base font-sans mb-4">Analyse des données de signalement et questionnement sur l'efficacité des budgets alloués à l'entretien des routes.</p>
                  <div class="flex justify-between items-center text-sm opacity-90">
                      <span class="font-bold">Votes: 95</span>
-                     <span class="font-bold text-warning">Vérification en cours</span> <!-- Utilisation de la couleur warning -->
+                     <span class="font-bold text-warning">Vérification en cours</span>
                 </div>
             </article>
 
@@ -146,14 +137,14 @@
                 </div>
             </article>
 
-            <!-- Ajoutez plus de cartes ici pour voir comment la grille et les animations réagissent -->
-             <article class="bg-blanc text-noir p-6 rounded-lg shadow-md border-4 border-danger scroll-reveal">
+             <!-- Exemple de Carte Article 4 (Rumeur) -->
+            <article class="bg-blanc text-noir p-6 rounded-lg shadow-md border-4 border-danger scroll-reveal">
                 <h3 class="text-2xl font-serif font-bold mb-2 leading-tight">Rumeur : La mairie va raser le parc pour construire un parking géant ?</h3>
                 <p class="text-sm font-sans opacity-80 mb-4">Catégorie: Local - Rumeur</p>
                 <p class="text-base font-sans mb-4">Une information non sourcée circule. Notre équipe citoyenne investigue pour vérifier les faits.</p>
                  <div class="flex justify-between items-center text-sm opacity-90">
                      <span class="font-bold">Votes: 210</span>
-                     <span class="font-bold text-danger">Improbable: 75%</span> <!-- Utilisation de la couleur danger -->
+                     <span class="font-bold text-danger">Improbable: 75%</span>
                 </div>
             </article>
 
@@ -178,45 +169,53 @@
     </footer>
 
 
-    <!-- Inclusion du SDK Firebase (version 9+ modulaire recommandée si possible) -->
-    <!-- Pour utiliser cette version modulaire, votre script.js devra utiliser les imports ES Modules -->
-    <!-- Exemple avec v9+ -->
+    <!-- Inclusion et Initialisation du SDK Firebase (version 9+ modulaire) -->
+    <!-- CE BLOC UTILISE LA CONFIG QUE VOUS AVEZ FOURNIE -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-        // Importez les autres modules dont vous avez besoin (auth, functions, etc.)
+        // Importez les fonctions des SDK nécessaires via les CDN Firebase v9+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        // Ajoutez d'autres services au fur et à mesure :
+        // import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        // import { getFunctions } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
+        // import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
-        // Votre configuration Firebase ici (gardez-la dans le JS si vous utilisez des imports ES Modules)
-        // REMPLACER LES PLACEHOLDERS AVEC VOS VRAIES INFOS DEPUIS LA CONSOLE FIREBASE
+
+        // Votre web app's Firebase configuration (celle que vous avez fournie)
+        // ATTENTION: API keys et config sont visibles dans le code source public.
+        // Ce n'est PAS un problème pour un prototype sur GitHub Pages avec Firebase Spark,
+        // mais ce N'EST PAS SECURE pour une application en production. Utilisez App Check et/ou un backend pour protéger vos API.
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
-            // measurementId: "YOUR_MEASUREMENT_ID" // Optionnel
+            apiKey: "AIzaSyCMIMSaLvhnexWHzNgpSIGnce_5F41d1b0",
+            authDomain: "journalist-eb929.firebaseapp.com",
+            projectId: "journalist-eb929",
+            storageBucket: "journalist-eb929.firebasestorage.app",
+            messagingSenderId: "133206783689",
+            appId: "1:133206783689:web:594a5ec29c42c1a32c3f18",
+            measurementId: "G-BRSRPH9N6E" // Optionnel si pas besoin d'Analytics
         };
 
-        // Initialiser Firebase et les services nécessaires
+        // Initialiser Firebase App et les services essentiels
         const app = initializeApp(firebaseConfig);
-        // const db = getFirestore(app);
-        // const auth = getAuth(app); // Si vous utilisez l'authentification
+        const analytics = getAnalytics(app); // Initialiser Analytics (si measurementId est défini)
+        const db = getFirestore(app); // Initialiser Firestore
 
-        console.log("Firebase Initialisé!"); // Vérifiez dans la console du navigateur
+        console.log("Firebase App, Analytics et Firestore initialisés (v11.6.0)!");
 
-        // Vous pouvez exporter 'app', 'db', 'auth' etc. si votre script.js principal est un module
-        // export { app, db }; // Exemple
+        // Pour faciliter l'accès à 'app' et 'db' dans les autres modules JS (comme script.js) pendant le PROTOTYPAGE:
+        // Rendre les instances globales.
+        // ATTENTION: Ce n'est PAS une bonne pratique pour une application en production de rendre des instances globales.
+        window.firebaseApp = app;
+        window.firestoreDb = db;
+        // window.firebaseAuth = getAuth(app); // Si vous initialisez Auth ici
+        // window.firebaseFunctions = getFunctions(app); // Si vous initialisez Functions ici
+        // window.firebaseStorage = getStorage(app); // Si vous initialisez Storage ici
+
     </script>
-     <!-- Si vous utilisez la version 8 comme précédemment, vous gardez les <script src="...">
-          et le code d'initialisation dans le script tag -->
 
-
-    <!-- Votre fichier JavaScript principal -->
-    <!-- Si vous utilisez la version 9+ modulaire ci-dessus, ce script.js DOIT être un module -->
-    <!-- <script src="script.js" type="module"></script> -->
-    <!-- Si vous utilisez la version 8, le script est lié normalement -->
-    <script src="script.js"></script>
+    <!-- Votre fichier JavaScript principal (DOIT être un module pour fonctionner avec les imports/exports ci-dessus) -->
+    <script src="script.js" type="module"></script>
 
 </body>
 </html>
