@@ -1,39 +1,28 @@
-// *** Initialisation de Firebase (version 8) ***
-// Si vous avez choisi d'utiliser la version 9+ modulaire avec 'type="module"' dans index.html,
-// vous initialiserez Firebase directement dans le script tag 'type="module"' dans index.html
-// comme montré dans l'exemple commenté de l'index.html mis à jour.
-// Sinon (si vous utilisez la v8 via CDN), vous pouvez initialiser ici :
+// script.js
 
-/*
-// Votre configuration Firebase ici
-// REMPLACER LES PLACEHOLDERS AVEC VOS VRAIES INFOS DEPUIS LA CONSOLE FIREBASE
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID",
-    // measurementId: "YOUR_MEASUREMENT_ID" // Optionnel
-};
+// *** Accès aux instances Firebase (pour prototypage simple via variables globales) ***
+// ATTENTION: En production, il est préférable d'importer les modules spécifiques
+// import { getFirestore } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+// const db = getFirestore(window.firebaseApp); // Accéder à l'app globale et initialiser Firestore ici
+// ou simplement accéder directement à l'instance globale si elle a été rendue globale:
+const app = window.firebaseApp; // L'instance Firebase App globale
+const db = window.firestoreDb; // L'instance Firestore globale
 
-// Initialiser Firebase
-firebase.initializeApp(firebaseConfig);
+if (app && db) {
+    console.log("Firebase instances (app, db) accessibles dans script.js !");
+    // Ici, vous pouvez commencer à interagir avec Firebase
+    // Exemple: lire des données de Firestore
+    // db.collection('articles').get().then((snapshot) => {
+    //     snapshot.docs.forEach(doc => {
+    //         console.log(doc.id, '=>', doc.data());
+    //     });
+    // });
+} else {
+    console.error("Les instances Firebase ne sont pas accessibles dans script.js. Vérifiez l'initialisation dans index.html.");
+}
 
-// Obtenir une référence à Firestore (exemple)
-// const db = firebase.firestore(); // Nécessite d'inclure le SDK Firestore via <script> dans index.html
-
-console.log("Firebase Initialisé (desde script.js)!"); // Vérifiez dans la console du navigateur
-*/
-
-// NOTE : J'ai commenté le bloc Firebase init ici. Pour un démarrage rapide avec V8 CDN,
-// la meilleure approche est de garder l'init dans un script tag DANS index.html AVANT script.js.
-// La version mise à jour de index.html lie script.js en dernier et assume que l'init est faite avant,
-// soit dans un script tag précédent, soit via l'approche modulaire type="module".
-// POUR CETTE ÉTAPE, LAISSEZ LE FICHIER script.js VIDE OU AVEC SEULEMENT LA LOGIQUE SCROLL-REVEAL SUIVANTE.
 
 // *** Logique de Scroll Reveal avec IntersectionObserver ***
-// C'est une méthode plus performante que d'écouter l'événement 'scroll'
 
 const scrollElements = document.querySelectorAll(".scroll-reveal");
 
@@ -46,7 +35,6 @@ const observerOptions = {
 const observer = new IntersectionObserver((entries, observer) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      // L'élément est visible
       entry.target.classList.add("is-visible");
       // Si vous voulez que l'animation ne se déclenche qu'une seule fois:
       // observer.unobserve(entry.target);
@@ -63,11 +51,10 @@ scrollElements.forEach(el => {
   observer.observe(el);
 });
 
-console.log("Scroll Reveal observer configuré."); // Vérifiez dans la console du navigateur
+console.log("Scroll Reveal observer configuré dans script.js.");
+
 
 // --- Autres scripts JavaScript iront ici ---
-// Par exemple:
-// - Gestion des événements UI (clicks sur boutons, soumission de formulaires)
-// - Interaction avec Firebase (ajouter article, voter, lire données)
-// - Logique de la carte interactive
-// - Mise en place de la PWA (enregistrement du service worker)
+// Vous pouvez ajouter ici toute la logique UI/UX qui ne dépend pas *directement* de Firebase pour l'instant.
+// Lorsque vous devrez interagir avec Firestore, Auth, etc., utilisez les variables 'app', 'db', etc.
+// qui ont été rendues globales, ou passez par les imports module (méthode recommandée pour l'avenir).
