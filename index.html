@@ -51,7 +51,7 @@
         }
     </script>
 
-    <!-- Styles personnalisés (curseur, scroll-reveal de base) -->
+    <!-- Styles personnalisés (curseur, scroll-reveal de base, hidden) -->
     <style>
         body {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect x="10" y="0" width="4" height="24" fill="%2300FFFF"/><rect x="0" y="10" width="24" height="4" fill="%2300FFFF"/></svg>'), auto;
@@ -77,7 +77,7 @@
         .scroll-reveal:nth-child(5) { transition-delay: 400ms; }
         /* Ajoutez plus si nécessaire ou gérez dynamiquement en JS */
 
-         /* Styles pour cacher les éléments initialement */
+         /* Classe pour cacher les éléments */
         .hidden {
             display: none !important; /* Use !important to override Tailwind's default display */
         }
@@ -192,19 +192,16 @@
     </footer>
 
 
-    <!-- Inclusion et Initialisation du SDK Firebase (version 9+ modulaire) -->
+    <!-- *** Inclusion et Initialisation du SDK Firebase (version 9+ modulaire) *** -->
+    <!-- Important : Ce script doit venir AVANT votre script.js qui utilisera les services -->
     <script type="module">
-        // Importez les fonctions des SDK nécessaires via les CDN Firebase v9+
+        // Importez la fonction d'initialisation de l'App Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-        // Importez d'autres services au fur et à mesure :
-        // import { getFunctions } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
-        // import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
-
 
         // Votre web app's Firebase configuration (celle que vous avez fournie)
+        // ATTENTION: API keys et config sont visibles dans le code source public.
+        // Ceci est acceptable pour un prototype simple sur GitHub Pages avec Firebase Spark,
+        // mais N'EST PAS SECURE pour une application en production.
         const firebaseConfig = {
             apiKey: "AIzaSyCMIMSaLvhnexWHzNgpSIGnce_5F41d1b0",
             authDomain: "journalist-eb929.firebaseapp.com",
@@ -215,23 +212,33 @@
             measurementId: "G-BRSRPH9N6E" // Optionnel si pas besoin d'Analytics
         };
 
-        // Initialiser Firebase App et les services essentiels
+        // Initialiser Firebase App
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app); // Initialiser Analytics (si measurementId est défini)
-        const db = getFirestore(app); // Initialiser Firestore
-        const auth = getAuth(app); // Initialiser Authentication
+        console.log("Firebase App initialisée (v11.6.0)!");
 
-        console.log("Firebase App, Analytics, Firestore, et Auth initialisés (v11.6.0)!");
-
-        // Pour faciliter l'accès aux instances dans les autres modules JS (pour le PROTOTYPAGE):
+        // Rendre l'instance de l'App Firebase disponible globalement
+        // C'est une astuce pour que les autres scripts modules puissent y accéder facilement.
+        // Pour une application plus structurée, on utiliserait des imports/exports plus formels.
         window.firebaseApp = app;
-        window.firestoreDb = db;
-        window.firebaseAuth = auth; // Rendre l'instance Auth globale
-        window.googleAuthProvider = GoogleAuthProvider; // Rendre le provider global
+
+        // --- Optionnel: Initialiser Analytics si vous l'utilisez et avez un measurementId ---
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+        // const analytics = getAnalytics(app);
+        // console.log("Firebase Analytics initialisé!");
 
     </script>
 
-    <!-- Votre fichier JavaScript principal (DOIT être un module) -->
+    <!-- *** Inclusion des SDK des services Firebase (Auth, Firestore, etc.) *** -->
+    <!-- Importez SEULEMENT les modules des services dont vous avez besoin -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js"></script>
+     <!-- Ajoutez d'autres services au fur et à mesure : -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js"></script> -->
+
+
+    <!-- *** Votre fichier JavaScript principal (DOIT être un module) *** -->
+    <!-- Ce script utilisera les fonctions des services Firebase importées ci-dessus -->
     <script src="script.js" type="module"></script>
 
 </body>
