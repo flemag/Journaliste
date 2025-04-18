@@ -77,7 +77,10 @@
         .scroll-reveal:nth-child(5) { transition-delay: 400ms; }
         /* Ajoutez plus si nécessaire ou gérez dynamiquement en JS */
 
-
+         /* Styles pour cacher les éléments initialement */
+        .hidden {
+            display: none !important; /* Use !important to override Tailwind's default display */
+        }
     </style>
 </head>
 <body class="bg-noir text-blanc font-sans leading-relaxed">
@@ -85,19 +88,39 @@
 
     <div class="container mx-auto p-4 lg:p-8 max-w-screen-xl">
 
-        <!-- Titre Principal -->
-        <header class="my-12 text-center lg:text-left">
-            <h1 class="text-5xl md:text-7xl font-serif font-bold text-blanc">
-                <span class="block text-primary leading-tight">Citoyen</span>
-                <span class="block">Enquêteur</span>
-            </h1>
-            <p class="mt-4 text-lg opacity-80 font-mono">Votre plateforme pour l'info locale, vérifiée par la communauté.</p>
+        <!-- Header avec Titre et UI d'Authentification -->
+        <header class="my-12 flex flex-col lg:flex-row items-center justify-between">
+            <div class="text-center lg:text-left mb-8 lg:mb-0">
+                 <h1 class="text-5xl md:text-7xl font-serif font-bold text-blanc leading-none">
+                    <span class="block text-primary">Citoyen</span>
+                    <span class="block">Enquêteur</span>
+                </h1>
+                <p class="mt-2 text-lg opacity-80 font-mono">Votre plateforme pour l'info locale, vérifiée par la communauté.</p>
+            </div>
+
+            <!-- UI d'Authentification -->
+            <div id="auth-ui" class="flex items-center space-x-4">
+                <!-- Affiché quand l'utilisateur est déconnecté -->
+                <button id="signInBtn" class="px-4 py-2 bg-primary text-noir font-bold rounded hover:bg-primary-light transition-colors">
+                    Se connecter avec Google
+                </button>
+
+                <!-- Affiché quand l'utilisateur est connecté -->
+                <div id="userInfo" class="flex items-center space-x-3 hidden">
+                    <img id="userAvatar" src="" alt="Avatar utilisateur" class="w-8 h-8 rounded-full border-2 border-blanc">
+                    <span id="userName" class="text-blanc font-bold"></span>
+                    <button id="signOutBtn" class="px-3 py-1 bg-danger text-blanc font-bold text-sm rounded hover:bg-red-700 transition-colors">
+                        Déconnexion
+                    </button>
+                </div>
+            </div>
         </header>
 
         <!-- Section "Bloc Vif" - Appel à action -->
         <section class="bg-secondary text-noir p-6 md:p-10 my-12 rounded-lg shadow-xl border-4 border-blanc scroll-reveal">
             <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4">Participez à l'enquête !</h2>
             <p class="text-lg">Publiez vos découvertes, votez sur la crédibilité des infos, ou explorez la carte interactive de votre quartier.</p>
+            <!-- Ce bouton pourrait être conditionnel selon l'état de connexion -->
             <button class="mt-6 px-6 py-3 bg-noir text-blanc font-bold text-lg border-2 border-blanc hover:bg-gray-800 transition-colors rounded">Commencer</button>
         </section>
 
@@ -170,22 +193,18 @@
 
 
     <!-- Inclusion et Initialisation du SDK Firebase (version 9+ modulaire) -->
-    <!-- CE BLOC UTILISE LA CONFIG QUE VOUS AVEZ FOURNIE -->
     <script type="module">
         // Importez les fonctions des SDK nécessaires via les CDN Firebase v9+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-        // Ajoutez d'autres services au fur et à mesure :
-        // import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        // Importez d'autres services au fur et à mesure :
         // import { getFunctions } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
         // import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
 
 
         // Votre web app's Firebase configuration (celle que vous avez fournie)
-        // ATTENTION: API keys et config sont visibles dans le code source public.
-        // Ce n'est PAS un problème pour un prototype sur GitHub Pages avec Firebase Spark,
-        // mais ce N'EST PAS SECURE pour une application en production. Utilisez App Check et/ou un backend pour protéger vos API.
         const firebaseConfig = {
             apiKey: "AIzaSyCMIMSaLvhnexWHzNgpSIGnce_5F41d1b0",
             authDomain: "journalist-eb929.firebaseapp.com",
@@ -200,21 +219,19 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app); // Initialiser Analytics (si measurementId est défini)
         const db = getFirestore(app); // Initialiser Firestore
+        const auth = getAuth(app); // Initialiser Authentication
 
-        console.log("Firebase App, Analytics et Firestore initialisés (v11.6.0)!");
+        console.log("Firebase App, Analytics, Firestore, et Auth initialisés (v11.6.0)!");
 
-        // Pour faciliter l'accès à 'app' et 'db' dans les autres modules JS (comme script.js) pendant le PROTOTYPAGE:
-        // Rendre les instances globales.
-        // ATTENTION: Ce n'est PAS une bonne pratique pour une application en production de rendre des instances globales.
+        // Pour faciliter l'accès aux instances dans les autres modules JS (pour le PROTOTYPAGE):
         window.firebaseApp = app;
         window.firestoreDb = db;
-        // window.firebaseAuth = getAuth(app); // Si vous initialisez Auth ici
-        // window.firebaseFunctions = getFunctions(app); // Si vous initialisez Functions ici
-        // window.firebaseStorage = getStorage(app); // Si vous initialisez Storage ici
+        window.firebaseAuth = auth; // Rendre l'instance Auth globale
+        window.googleAuthProvider = GoogleAuthProvider; // Rendre le provider global
 
     </script>
 
-    <!-- Votre fichier JavaScript principal (DOIT être un module pour fonctionner avec les imports/exports ci-dessus) -->
+    <!-- Votre fichier JavaScript principal (DOIT être un module) -->
     <script src="script.js" type="module"></script>
 
 </body>
